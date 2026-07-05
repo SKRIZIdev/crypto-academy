@@ -22,9 +22,14 @@ function render() {
     el.className = 'lesson' + (isDone ? ' done' : '');
     el.innerHTML = `<div class="num">${isDone ? '✓' : i + 1}</div><div><h3>${title}</h3><p>${body}</p></div>`;
     el.onclick = () => {
-      if (done.includes(i)) done = done.filter(x => x !== i); else done.push(i);
+      const wasDone = done.includes(i);
+      if (wasDone) done = done.filter(x => x !== i); else done.push(i);
       localStorage.setItem(KEY, JSON.stringify(done));
       render();
+      if (window.UI) {
+        if (done.length === LESSONS.length) UI.toast('Course complete! 🎉', 'success', 3200);
+        else if (!wasDone) UI.toast(`Lesson done · ${done.length}/${LESSONS.length}`, 'success');
+      }
     };
     box.appendChild(el);
   });
